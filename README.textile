@@ -1,0 +1,38 @@
+h1. Friker
+
+* Author: "Dan Horrigan":http://dhorrigan.com/
+
+h2. DESCRIPTION
+
+Firsker is an extension of CI_Parser.  It is for CodeIgniter 2.0 *ONLY*.
+
+It adds some additional functionality to the base Parser library.
+
+
+ * You can now use PHP functions in your template.
+ * Example:
+ *   {date("F j, Y, g:i a")}
+ *
+ * You can also pass the parse() function a string of data, instead of a view.
+ * You just need to set the 4th parameter to FALSE.
+ * Example:
+ *   $data = array();
+ *   $body = $this->db->get_where('pages', array('id' => 4))->row()->body;
+ *   $body = $this->parser->parse($body, $data, TRUE, FALSE);
+ *
+
+h2. INSTALLATION
+
+1.  Copy MY_Parser_.php to your application/libraries folder.
+2.  Load it like normal: @$this->load->library('parser');@
+
+h2. USAGE
+
+You can now use PHP functions in your template:
+<pre><code>{date("F j, Y, g:i a")}</code></pre>
+
+You can also pass the parse() function a string of data, instead of a view.  You just need to set the 4th parameter to FALSE:
+
+<pre><code>$data = array();
+$body = $this->db->get_where('pages', array('id' => 4))->row()->body;
+$body = $this->parser->parse($body, $data, TRUE, FALSE);</code></pre>

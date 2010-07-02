@@ -2,7 +2,7 @@
 /**
  * Frisker
  *
- * An extension of CI_Parser.  You can use it the same way as normal, exept
+ * An extension of CI_Parser.  You can use it the same way as normal, except
  * with additional features.
  *
  * You can now use PHP functions in your template.
@@ -42,6 +42,11 @@
  */
 class MY_Parser extends CI_Parser
 {
+	/**
+	 * Holds the data you send the parser.
+	 */
+	protected static $_data;
+	
 	/**
 	 * Parse a template
 	 *
@@ -86,9 +91,12 @@ class MY_Parser extends CI_Parser
 		{
 			return FALSE;
 		}
+		self::$_data = $data;
+		unset($data);
 		
-		foreach ($data as $key => $val)
+		foreach (self::$_data as $key => $val)
 		{
+			
 			if (is_array($val))
 			{
 				$template = $this->_parse_pair($key, $val, $template);		
@@ -101,6 +109,7 @@ class MY_Parser extends CI_Parser
 
 		// eval() any remaining tags
 		$template = preg_replace_callback('/' . $this->l_delim . '(.*?)' . $this->r_delim . '/', 'MY_Parser::eval_callback', $template);
+		//$template = $this->do_eval($template, $data);
 		if ($return == FALSE)
 		{
 			$CI =& get_instance();
@@ -109,7 +118,7 @@ class MY_Parser extends CI_Parser
 
 		return $template;
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -121,21 +130,28 @@ class MY_Parser extends CI_Parser
 	 * @param	array
 	 * @return	mixed
 	 */
-	static function eval_callback($matches)
+	static function eval_callback($_matches)
 	{
 		// Skip these as they are replaced in the output class.
-		if(in_array($matches[0], array('{elapsed_time}', '{memory_usage}')))
+		if(in_array($_matches[0], array('{elapsed_time}', '{memory_usage}')) OR empty($_matches[1]))
 		{
-			return $matches[0];
+			return $_matches[0];
 		}
-		if(substr($matches[1], -1) != ';')
+		if(substr($_matches[1], -1) != ';')
 		{
-			$matches[1] .= ';';
+			$_matches[1] .= ';';
 		}
-		
-		eval('$eval_return = ' . addslashes($matches[1]));
 
-		return $eval_return;
+		foreach (self::$_data as $_key => &$_val)
+		{
+			if(!isset(${$_key}))
+			{
+				${$_key} =& $_val;
+			}
+		}
+		eval("\$_matches[1] = " . $_matches[1]);
+		
+		return $_matches[1];
 	}
 
 }

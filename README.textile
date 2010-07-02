@@ -1,4 +1,4 @@
-h1. Friker
+h1. Frisker
 
 * Author: "Dan Horrigan":http://dhorrigan.com/
 

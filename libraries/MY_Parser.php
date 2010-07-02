@@ -109,7 +109,7 @@ class MY_Parser extends CI_Parser
 
 		// eval() any remaining tags
 		$template = preg_replace_callback('/' . $this->l_delim . '(.*?)' . $this->r_delim . '/', 'MY_Parser::eval_callback', $template);
-		//$template = $this->do_eval($template, $data);
+
 		if ($return == FALSE)
 		{
 			$CI =& get_instance();
